@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Kim Boş?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f46e5'/%3E%3Crect x='14' y='18' width='36' height='32' rx='5' fill='white'/%3E%3Crect x='14' y='18' width='36' height='9' rx='4' fill='%23c7d2fe'/%3E%3Cpath d='M24 38l6 6 11-12' stroke='%234f46e5' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f6f7fb; --card:#ffffff; --text:#1c1d26; --muted:#6b6f80; --line:#e3e5ee;
+  --accent:#4f46e5; --accent-soft:#e0e7ff; --on:#22c55e; --on-soft:#bbf7d0; --partial:#86efac;
+  --heat:79,70,229; --warn:#f59e0b; --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1117; --card:#181b24; --text:#e8e9ef; --muted:#9298ab; --line:#2a2f3d;
+    --accent:#818cf8; --accent-soft:#272b4a; --on:#22c55e; --on-soft:#14532d; --partial:#166534;
+    --heat:129,140,248;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:12px 16px 40px}
+header{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:6px 0 10px}
+header h1{font-size:20px;margin:0;display:flex;align-items:center;gap:8px}
+header h1 small{font-size:12px;font-weight:500;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:2px 8px;border-radius:99px}
+.me-btn{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:5px 12px 5px 6px;max-width:55%}
+.me-btn span.n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:20px;height:20px;border-radius:50%;flex:none;display:inline-grid;place-items:center;color:#fff;font-size:11px;font-weight:700}
+.banner{background:#fef3c7;color:#78350f;border-radius:10px;padding:8px 12px;font-size:13px;margin-bottom:10px}
+@media (prefers-color-scheme: dark){.banner{background:#422006;color:#fde68a}}
+.banner:empty{display:none}
+.tabs{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-bottom:10px}
+.tabs button{flex:1;border:0;background:transparent;padding:8px 4px;border-radius:9px;font-weight:600;color:var(--muted);font-size:14px}
+.tabs button.act{background:var(--accent);color:#fff}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.weeknav{display:flex;align-items:center;gap:6px}
+.icon-btn{border:1px solid var(--line);background:var(--card);width:34px;height:34px;border-radius:10px;font-size:18px;line-height:1}
+.weeklabel{font-weight:600;min-width:120px;text-align:center}
+.link-btn{border:0;background:none;color:var(--accent);font-size:13px;padding:4px 6px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:transparent;padding:7px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button.act{background:var(--accent-soft);color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
+.hint{font-size:13px;color:var(--muted);margin:2px 2px 8px}
+.grid{display:grid;grid-template-columns:44px repeat(7,1fr);gap:3px;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.grid .h{font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:flex-end;padding-right:4px}
+.grid .dh{text-align:center;font-size:12px;color:var(--muted);padding:4px 0;border-radius:8px;border:0;background:transparent;line-height:1.15}
+.grid .dh b{display:block;font-size:15px;color:var(--text)}
+.grid .dh.today b{color:var(--accent)}
+.grid .dh.today{background:var(--accent-soft)}
+.cell{height:30px;border-radius:6px;background:var(--bg);border:1px solid var(--line);position:relative;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0}
+.grid.blocks .cell{height:64px;font-size:13px}
+.grid.blocks .h{flex-direction:column;align-items:flex-end;justify-content:center;line-height:1.1}
+.grid.blocks .h b{color:var(--text);font-size:12px}
+.cell.on{background:var(--on);border-color:var(--on)}
+.cell.partial{background:linear-gradient(135deg,var(--partial) 50%,var(--bg) 50%);border-color:var(--partial)}
+.cell.past{opacity:.45}
+.cell.sel{outline:3px solid var(--text);outline-offset:1px}
+.cell.all{box-shadow:inset 0 0 0 2px #facc15}
+.cell .cnt{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.cell .cnt.dim{color:var(--muted);text-shadow:none;font-weight:600}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:3px 10px 3px 4px;font-size:13px}
+.chip.off{opacity:.4;text-decoration:line-through}
+.chip .dot{width:18px;height:18px;font-size:10px}
+.detail{margin-top:10px}
+.detail h3{margin:0 0 8px;font-size:15px}
+.detail .grp{margin-bottom:8px}
+.detail .grp>div:first-child{font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.legend{display:flex;gap:12px;align-items:center;font-size:12px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-3px;margin-right:4px;border:1px solid var(--line)}
+.best{display:flex;flex-direction:column;gap:8px}
+.best .item{display:flex;gap:12px;align-items:center}
+.best .score{flex:none;width:52px;height:52px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:800;font-size:16px;line-height:1}
+.best .score small{display:block;font-size:10px;font-weight:600}
+.best .when{font-weight:700}
+.best .who{font-size:13px;color:var(--muted);margin-top:2px}
+.badge{display:inline-block;background:#facc15;color:#422006;font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:1px}
+.empty{color:var(--muted);text-align:center;padding:24px 8px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:13px;transition:transform .25s,opacity .25s;opacity:0;pointer-events:none;z-index:9}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.saving{font-size:12px;color:var(--muted)}
+dialog{border:0;border-radius:18px;padding:20px;width:min(380px,calc(100vw - 32px));background:var(--card);color:var(--text)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 6px;font-size:19px}
+dialog p{margin:0 0 12px;color:var(--muted);font-size:14px}
+dialog input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;margin-bottom:10px}
+dialog .who-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+@media (max-width:520px){
+  .wrap{padding:8px 10px 40px}
+  .grid{grid-template-columns:36px repeat(7,1fr);gap:2px}
+  .cell{height:28px;border-radius:5px}
+  .grid .dh{font-size:10px}
+  .grid .dh b{font-size:13px}
+  .weeklabel{min-width:100px;font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Kim Boş? <small id="groupName"></small></h1>
+    <button class="me-btn" id="meBtn"><span class="dot" id="meDot"></span><span class="n" id="meName">Giriş</span></button>
+  </header>
+  <div class="banner" id="banner"></div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="me">Takvimim</button>
+    <button data-tab="group">Grup</button>
+    <button data-tab="best">En İyi Zamanlar</button>
+  </nav>
+  <div class="bar">
+    <div class="weeknav">
+      <button class="icon-btn" id="prevW" aria-label="Önceki hafta">‹</button>
+      <div class="weeklabel" id="weekLabel"></div>
+      <button class="icon-btn" id="nextW" aria-label="Sonraki hafta">›</button>
+      <button class="link-btn" id="todayW">Bu hafta</button>
+    </div>
+    <div class="seg" id="modeSeg">
+      <button data-mode="blok">Blok</button>
+      <button data-mode="saat">Saatlik</button>
+    </div>
+  </div>
+  <main id="view"></main>
+</div>
+
+<dialog id="nameDlg">
+  <h2>Sen kimsin?</h2>
+  <p>Adını yaz ya da listeden kendini seç. Bu cihaz seni hatırlar.</p>
+  <div class="who-list" id="whoList"></div>
+  <input id="nameInput" maxlength="30" placeholder="Adın (ör. Mustafa)" autocomplete="nickname">
+  <div class="actions" style="justify-content:flex-end;margin:0">
+    <button class="btn" id="nameCancel">Vazgeç</button>
+    <button class="btn primary" id="nameOk">Devam</button>
+  </div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+/* =====================================================================
+   1) FIREBASE AYARLARI — Kurulum rehberindeki 4. adımda kopyaladığın
+      firebaseConfig bloğunu buraya yapıştır. Bu alan "BURAYA..." olarak
+      kaldıkça uygulama DEMO modunda çalışır (veri sadece bu tarayıcıda).
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAJnaj4fYVbZjCcJY1cfIgGYAEFZoVJs_M",
+  authDomain: "plan-saatleri.firebaseapp.com",
+  projectId: "plan-saatleri",
+  storageBucket: "plan-saatleri.firebasestorage.app",
+  messagingSenderId: "496430465351",
+  appId: "1:496430465351:web:f6a4c945c55dc8f6e60c62"
+};
+/* ===================================================================== */
+
+const DEMO = !firebaseConfig.apiKey || firebaseConfig.apiKey.startsWith("BURAYA");
+const qs = new URLSearchParams(location.search);
+const GROUP = (qs.get("g") || "arkadaslar").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30) || "arkadaslar";
+
+const HOURS = Array.from({ length: 16 }, (_, i) => i + 8); // 08:00 – 24:00
+const range = (a, b) => Array.from({ length: b - a }, (_, i) => a + i);
+const BLOCKS = [
+  { label: "Sabah", sub: "08–12", hours: range(8, 12) },
+  { label: "Öğle",  sub: "12–18", hours: range(12, 18) },
+  { label: "Akşam", sub: "18–24", hours: range(18, 24) },
+];
+const PALETTE = ["#ef4444","#f97316","#eab308","#22c55e","#14b8a6","#0ea5e9","#6366f1","#a855f7","#ec4899","#64748b","#84cc16","#06b6d4"];
+const DAYS_TR = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
+
+/* ---------- yardımcılar ---------- */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const dkey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const mondayOf = d => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const wd = (x.getDay() + 6) % 7; return addDays(x, -wd); };
+const slug = s => s.toLocaleLowerCase("tr-TR").replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0, 30);
+const colorFor = id => { let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; };
+const initial = n => (n || "?").trim().charAt(0).toLocaleUpperCase("tr-TR");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const ls = {
+  get(k, def) { try { const v = localStorage.getItem(k); return v === null ? def : JSON.parse(v); } catch { return def; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2000); };
+
+/* ---------- durum ---------- */
+const state = {
+  me: ls.get("kimbos-me-" + GROUP, null),
+  members: {},
+  week: mondayOf(new Date()),
+  mode: ls.get("kimbos-mode", "blok"),
+  tab: ls.get("kimbos-tab", "me"),
+  excluded: new Set(ls.get("kimbos-excl-" + GROUP, [])),
+  sel: null,
+};
+
+/* ---------- veri katmanı ---------- */
+async function makeStore() {
+  if (DEMO) {
+    const KEY = "kimbos-demo-" + GROUP;
+    return {
+      subscribe(cb) {
+        cb(ls.get(KEY, {}));
+        addEventListener("storage", e => { if (e.key === KEY) cb(ls.get(KEY, {})); });
+      },
+      async save(id, data) { const all = ls.get(KEY, {}); all[id] = data; ls.set(KEY, all); }
+    };
+  }
+  const V = "10.12.2";
+  const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+  const fs = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
+  const db = fs.getFirestore(initializeApp(firebaseConfig));
+  const col = fs.collection(db, "groups", GROUP, "members");
+  return {
+    subscribe(cb) {
+      fs.onSnapshot(col, snap => {
+        const m = {}; snap.forEach(d => m[d.id] = d.data()); cb(m);
+        $("#banner").textContent = "";
+      }, err => { $("#banner").textContent = "Veritabanına bağlanılamadı: " + err.message; });
+    },
+    save: (id, data) => fs.setDoc(fs.doc(col, id), data)
+  };
+}
+
+let store;
+let saveTimer, dirty = false;
+function myData() {
+  const id = state.me?.id; if (!id) return null;
+  if (!state.members[id]) state.members[id] = { name: state.me.name, color: colorFor(id), free: {}, updated: Date.now() };
+  return state.members[id];
+}
+function queueSave() {
+  clearTimeout(saveTimer);
+  dirty = true;
+  saveTimer = setTimeout(async () => {
+    const d = myData(); if (!d) return;
+    // 45 günden eski kayıtları temizle
+    const cutoff = dkey(addDays(new Date(), -45));
+    for (const k of Object.keys(d.free)) if (k < cutoff || !d.free[k].length) delete d.free[k];
+    d.updated = Date.now(); d.name = state.me.name;
+    const p = store.save(state.me.id, { name: d.name, color: d.color, free: d.free, updated: d.updated });
+    dirty = false; // Firestore yerel yazımı anında yansıtır
+    try { await p; } catch (e) { toast("Kaydedilemedi: " + e.message); }
+  }, 500);
+}
+
+/* ---------- hesaplamalar ---------- */
+const weekDays = () => range(0, 7).map(i => addDays(state.week, i));
+const freeSet = (m, key) => new Set(m?.free?.[key] || []);
+const activeMembers = () => Object.entries(state.members)
+  .filter(([id]) => !state.excluded.has(id))
+  .sort((a, b) => a[1].name.localeCompare(b[1].name, "tr"));
+const enteredThisWeek = m => weekDays().some(d => (m.free?.[dkey(d)] || []).length);
+const isPast = (d, h) => { const t = new Date(d); t.setHours(h + 1, 0, 0, 0); return t < new Date(); };
+
+function whoFree(d, hours) {
+  const key = dkey(d), free = [], partial = [], busy = [], none = [];
+  for (const [id, m] of activeMembers()) {
+    const s = freeSet(m, key), n = hours.filter(h => s.has(h)).length;
+    if (n === hours.length) free.push(id);
+    else if (n > 0) partial.push(id);
+    else if (enteredThisWeek(m)) busy.push(id);
+    else none.push(id);
+  }
+  return { free, partial, busy, none };
+}
+
+/* ---------- çizim ---------- */
+function renderHeader() {
+  $("#groupName").textContent = GROUP;
+  $("#meName").textContent = state.me ? state.me.name : "Giriş yap";
+  const dot = $("#meDot");
+  dot.style.background = state.me ? colorFor(state.me.id) : "var(--muted)";
+  dot.textContent = state.me ? initial(state.me.name) : "?";
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("act", b.dataset.tab === state.tab));
+  document.querySelectorAll("#modeSeg button").forEach(b => b.classList.toggle("act", b.dataset.mode === state.mode));
+  const a = state.week, b = addDays(a, 6);
+  const f = (d, o) => d.toLocaleDateString("tr-TR", o);
+  $("#weekLabel").textContent = a.getMonth() === b.getMonth()
+    ? `${a.getDate()} – ${f(b, { day: "numeric", month: "short" })}`
+    : `${f(a, { day: "numeric", month: "short" })} – ${f(b, { day: "numeric", month: "short" })}`;
+  if (DEMO) $("#banner").textContent = "Demo modu: Firebase ayarları girilmedi, veriler sadece bu tarayıcıda tutuluyor. Kurulum rehberine bak.";
+}
+
+function dayHeaders(clickable) {
+  const today = dkey(new Date());
+  return `<div></div>` + weekDays().map((d, i) =>
+    `<button class="dh ${dkey(d) === today ? "today" : ""}" data-day="${i}" ${clickable ? "" : "tabindex=-1"}>${DAYS_TR[i]}<b>${d.getDate()}</b></button>`).join("");
+}
+const rows = () => state.mode === "blok"
+  ? BLOCKS.map(b => ({ label: `<b>${b.label}</b>${b.sub}`, hours: b.hours }))
+  : HOURS.map(h => ({ label: pad(h), hours: [h] }));
+
+function renderMe() {
+  if (!state.me) return `<div class="card empty">Takvimini doldurmak için önce adını gir.<div class="actions" style="justify-content:center"><button class="btn primary" data-act="login">Adımı gir</button></div></div>`;
+  const m = myData(), days = weekDays();
+  let html = `<p class="hint">${state.mode === "blok" ? "Boş olduğun bloklara dokun." : "Boş olduğun saatlere dokun (bilgisayarda sürükleyerek boyayabilirsin)."} Gün adına dokunursan tüm gün seçilir. Otomatik kaydedilir.</p>`;
+  html += `<div class="card"><div class="grid ${state.mode === "blok" ? "blocks" : ""}" id="meGrid">${dayHeaders(true)}`;
+  rows().forEach((r, ri) => {
+    html += `<div class="h">${r.label}</div>`;
+    days.forEach((d, di) => {
+      const s = freeSet(m, dkey(d)), n = r.hours.filter(h => s.has(h)).length;
+      const cls = n === r.hours.length ? "on" : n ? "partial" : "";
+      const past = isPast(d, r.hours[r.hours.length - 1]) ? "past" : "";
+      html += `<button class="cell ${cls} ${past}" data-r="${ri}" data-d="${di}" aria-label="${DAYS_TR[di]} ${r.label.replace(/<[^>]+>/g, " ")}"></button>`;
+    });
+  });
+  html += `</div>
+    <div class="legend"><span><i style="background:var(--on)"></i>Boş</span>${state.mode === "blok" ? `<span><i style="background:linear-gradient(135deg,var(--partial) 50%,var(--bg) 50%)"></i>Kısmen boş</span>` : ""}<span><i></i>Dolu</span></div>
+    <div class="actions">
+      <button class="btn" data-act="copyPrev">Geçen haftayı kopyala</button>
+      <button class="btn" data-act="clearWeek">Bu haftayı temizle</button>
+    </div></div>`;
+  return html;
+}
+
+function renderMembersChips() {
+  const all = Object.entries(state.members).sort((a, b) => a[1].name.localeCompare(b[1].name, "tr"));
+  if (!all.length) return "";
+  return `<div class="chips">` + all.map(([id, m]) =>
+    `<button class="chip ${state.excluded.has(id) ? "off" : ""}" data-member="${esc(id)}" title="Dahil et / çıkar"><span class="dot" style="background:${m.color || colorFor(id)}">${esc(initial(m.name))}</span>${esc(m.name)}${enteredThisWeek(m) ? "" : " <span style='color:var(--muted)'>·</span>"}</button>`).join("") + `</div>`;
+}
+
+function nameChips(ids) {
+  if (!ids.length) return `<span style="color:var(--muted);font-size:13px">—</span>`;
+  return `<div class="chips" style="margin:0">` + ids.map(id => { const m = state.members[id];
+    return `<span class="chip"><span class="dot" style="background:${m.color || colorFor(id)}">${esc(initial(m.name))}</span>${esc(m.name)}</span>`; }).join("") + `</div>`;
+}
+
+function renderGroup() {
+  const total = activeMembers().length;
+  if (!Object.keys(state.members).length) return `<div class="card empty">Henüz kimse takvim girmedi. Linki arkadaşlarına gönder!<div class="actions" style="justify-content:center"><button class="btn primary" data-act="share">Linki paylaş</button></div></div>`;
+  const days = weekDays();
+  let html = `<p class="hint">Hücredeki sayı o saatte kaç kişinin boş olduğunu gösterir. Detay için dokun. Kişilere dokunarak hesaba katıp çıkarabilirsin.</p>${renderMembersChips()}`;
+  html += `<div class="card"><div class="grid ${state.mode === "blok" ? "blocks" : ""}" id="grpGrid">${dayHeaders(false)}`;
+  rows().forEach((r, ri) => {
+    html += `<div class="h">${r.label}</div>`;
+    days.forEach((d, di) => {
+      const w = whoFree(d, r.hours), n = w.free.length;
+      const a = total ? n / total : 0;
+      const bg = n ? `background:rgba(var(--heat),${0.18 + a * 0.82});border-color:transparent` : "";
+      const isSel = state.sel && state.sel.r === ri && state.sel.d === di;
+      const past = isPast(d, r.hours[r.hours.length - 1]) ? "past" : "";
+      html += `<button class="cell ${n && n === total && total > 1 ? "all" : ""} ${isSel ? "sel" : ""} ${past}" style="${bg}" data-r="${ri}" data-d="${di}"><span class="cnt ${n ? "" : "dim"}">${n || (w.partial.length ? "~" : "")}</span></button>`;
+    });
+  });
+  html += `</div><div class="legend"><span><i style="background:rgba(var(--heat),.3)"></i>Az kişi</span><span><i style="background:rgba(var(--heat),1)"></i>Çok kişi</span><span><i style="box-shadow:inset 0 0 0 2px #facc15"></i>Herkes boş</span>${state.mode === "blok" ? "<span>~ Kısmen boş olan var</span>" : ""}</div></div>`;
+  if (state.sel) {
+    const r = rows()[state.sel.r], d = days[state.sel.d];
+    if (r && d) {
+      const w = whoFree(d, r.hours);
+      const when = d.toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long" });
+      const time = `${pad(r.hours[0])}:00–${pad(r.hours[r.hours.length - 1] + 1)}:00`;
+      html += `<div class="card detail"><h3>${when} · ${time}</h3>
+        <div class="grp"><div>Boş (${w.free.length})</div>${nameChips(w.free)}</div>
+        ${w.partial.length ? `<div class="grp"><div>Kısmen boş (${w.partial.length})</div>${nameChips(w.partial)}</div>` : ""}
+        <div class="grp"><div>Dolu (${w.busy.length})</div>${nameChips(w.busy)}</div>
+        ${w.none.length ? `<div class="grp"><div>Bu hafta takvim girmedi (${w.none.length})</div>${nameChips(w.none)}</div>` : ""}
+      </div>`;
+    }
+  }
+  return html;
+}
+
+function bestTimes() {
+  const out = [], total = activeMembers().length;
+  weekDays().forEach(d => {
+    let run = null;
+    const flush = () => { if (run) out.push(run); run = null; };
+    for (const h of HOURS) {
+      if (isPast(d, h)) { flush(); continue; }
+      const ids = whoFree(d, [h]).free, sig = ids.join(",");
+      if (ids.length < 2) { flush(); continue; }
+      if (run && run.sig === sig) run.end = h + 1;
+      else { flush(); run = { d, start: h, end: h + 1, ids, sig }; }
+    }
+    flush();
+  });
+  return out
+    .map(x => ({ ...x, score: x.ids.length * 100 + (x.end - x.start) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map(x => ({ ...x, total }));
+}
+
+function renderBest() {
+  const list = bestTimes();
+  let html = `<p class="hint">Bu hafta en çok kişinin aynı anda boş olduğu zamanlar (en az 2 kişi, geçmiş saatler hariç).</p>${renderMembersChips()}`;
+  if (!list.length) return html + `<div class="card empty">Bu hafta ortak boş zaman bulunamadı. Herkes takvimini doldurdu mu?</div>`;
+  html += `<div class="best">` + list.map(x => {
+    const when = x.d.toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "short" });
+    const names = x.ids.map(id => esc(state.members[id].name)).join(", ");
+    return `<div class="card item"><div class="score">${x.ids.length}<small>/${x.total} kişi</small></div>
+      <div><div class="when">${when} · ${pad(x.start)}:00–${pad(x.end)}:00${x.ids.length === x.total ? `<span class="badge">Herkes</span>` : ""}</div>
+      <div class="who">${names}</div></div></div>`;
+  }).join("") + `</div><div class="actions"><button class="btn" data-act="share">Linki paylaş</button></div>`;
+  return html;
+}
+
+function render() {
+  renderHeader();
+  const v = $("#view");
+  v.innerHTML = state.tab === "me" ? renderMe() : state.tab === "group" ? renderGroup() : renderBest();
+}
+
+/* ---------- düzenleme ---------- */
+function setHours(di, hours, on) {
+  const m = myData(), key = dkey(weekDays()[di]);
+  const s = freeSet(m, key);
+  hours.forEach(h => on ? s.add(h) : s.delete(h));
+  m.free[key] = [...s].sort((a, b) => a - b);
+}
+function cellIsOn(ri, di) {
+  const s = freeSet(myData(), dkey(weekDays()[di]));
+  return rows()[ri].hours.every(h => s.has(h));
+}
+function paintCell(el, value) {
+  const ri = +el.dataset.r, di = +el.dataset.d;
+  setHours(di, rows()[ri].hours, value);
+  el.classList.toggle("on", value); el.classList.remove("partial");
+}
+
+let paint = null, lastPointer = "mouse";
+document.addEventListener("pointerdown", e => {
+  lastPointer = e.pointerType;
+  const c = e.target.closest("#meGrid .cell");
+  if (!c || e.pointerType !== "mouse") return;
+  e.preventDefault();
+  paint = { value: !cellIsOn(+c.dataset.r, +c.dataset.d), touched: new Set() };
+  paint.touched.add(c); paintCell(c, paint.value);
+});
+document.addEventListener("pointermove", e => {
+  if (!paint) return;
+  const c = document.elementFromPoint(e.clientX, e.clientY)?.closest?.("#meGrid .cell");
+  if (c && !paint.touched.has(c)) { paint.touched.add(c); paintCell(c, paint.value); }
+});
+document.addEventListener("pointerup", () => { if (paint) { paint = null; queueSave(); render(); } });
+
+document.addEventListener("click", e => {
+  const t = e.target;
+  const tab = t.closest("#tabs button");
+  if (tab) { state.tab = tab.dataset.tab; ls.set("kimbos-tab", state.tab); state.sel = null; return render(); }
+  const mode = t.closest("#modeSeg button");
+  if (mode) { state.mode = mode.dataset.mode; ls.set("kimbos-mode", state.mode); state.sel = null; return render(); }
+
+  const meCell = t.closest("#meGrid .cell");
+  if (meCell && lastPointer !== "mouse") { paintCell(meCell, !cellIsOn(+meCell.dataset.r, +meCell.dataset.d)); queueSave(); return render(); }
+  const dh = t.closest("#meGrid .dh");
+  if (dh) {
+    const di = +dh.dataset.day, s = freeSet(myData(), dkey(weekDays()[di]));
+    setHours(di, HOURS, !HOURS.every(h => s.has(h))); queueSave(); return render();
+  }
+  const gCell = t.closest("#grpGrid .cell");
+  if (gCell) {
+    const r = +gCell.dataset.r, d = +gCell.dataset.d;
+    state.sel = state.sel && state.sel.r === r && state.sel.d === d ? null : { r, d };
+    render();
+    if (state.sel) document.querySelector(".detail")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    return;
+  }
+  const chip = t.closest("button[data-member]");
+  if (chip) {
+    const id = chip.dataset.member;
+    state.excluded.has(id) ? state.excluded.delete(id) : state.excluded.add(id);
+    ls.set("kimbos-excl-" + GROUP, [...state.excluded]); return render();
+  }
+  const act = t.closest("[data-act]")?.dataset.act;
+  if (act === "login") return openName();
+  if (act === "share") return share();
+  if (act === "clearWeek") {
+    if (!confirmInline(t, "Emin misin? Tekrar dokun")) return;
+    weekDays().forEach((_, i) => setHours(i, HOURS, false)); queueSave(); render(); return toast("Hafta temizlendi");
+  }
+  if (act === "copyPrev") {
+    const m = myData();
+    weekDays().forEach((d, i) => { const prev = m.free[dkey(addDays(d, -7))] || []; m.free[dkey(d)] = [...prev]; });
+    queueSave(); render(); return toast("Geçen hafta kopyalandı");
+  }
+});
+function confirmInline(btn, msg) {
+  if (btn.dataset.confirm) return true;
+  btn.dataset.confirm = "1"; const old = btn.textContent; btn.textContent = msg;
+  setTimeout(() => { btn.textContent = old; delete btn.dataset.confirm; }, 3000);
+  return false;
+}
+
+$("#prevW").onclick = () => { state.week = addDays(state.week, -7); state.sel = null; render(); };
+$("#nextW").onclick = () => { state.week = addDays(state.week, 7); state.sel = null; render(); };
+$("#todayW").onclick = () => { state.week = mondayOf(new Date()); state.sel = null; render(); };
+
+async function share() {
+  const url = location.href.split("#")[0];
+  try {
+    if (navigator.share) await navigator.share({ title: "Kim Boş?", text: "Boş olduğun saatleri buraya gir:", url });
+    else { await navigator.clipboard.writeText(url); toast("Link kopyalandı"); }
+  } catch {}
+}
+
+/* ---------- isim ---------- */
+const dlg = $("#nameDlg");
+function openName() {
+  const list = Object.entries(state.members).sort((a, b) => a[1].name.localeCompare(b[1].name, "tr"));
+  $("#whoList").innerHTML = list.map(([id, m]) =>
+    `<button class="chip" data-pick="${esc(id)}"><span class="dot" style="background:${m.color || colorFor(id)}">${esc(initial(m.name))}</span>${esc(m.name)}</button>`).join("");
+  $("#nameInput").value = state.me?.name || "";
+  dlg.showModal();
+}
+function setMe(name) {
+  name = name.trim().replace(/\s+/g, " ").slice(0, 30);
+  const id = slug(name);
+  if (!id) return toast("Geçerli bir ad yaz");
+  state.me = { id, name: state.members[id]?.name || name };
+  ls.set("kimbos-me-" + GROUP, state.me);
+  dlg.close(); state.tab = "me"; render();
+  if (!state.members[id]) { myData(); queueSave(); }
+}
+$("#whoList").addEventListener("click", e => { const b = e.target.closest("[data-pick]"); if (b) setMe(state.members[b.dataset.pick].name); });
+$("#nameOk").onclick = () => setMe($("#nameInput").value);
+$("#nameInput").addEventListener("keydown", e => { if (e.key === "Enter") setMe(e.target.value); });
+$("#nameCancel").onclick = () => dlg.close();
+$("#meBtn").onclick = openName;
+
+/* ---------- başlat ---------- */
+render();
+try {
+  store = await makeStore();
+  let first = true;
+  store.subscribe(m => {
+    // kendi yerel düzenlemelerimizi korumak için: kaydetme beklerken kendi kaydımızı ezme
+    const mine = state.me && state.members[state.me.id];
+    state.members = m || {};
+    if (mine && dirty) state.members[state.me.id] = mine;
+    if (!paint) render();
+    if (first) { first = false; if (!state.me) openName(); }
+  });
+} catch (e) {
+  $("#banner").textContent = "Başlatılamadı: " + e.message;
+}
+</script>
+</body>
+</html>
